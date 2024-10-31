@@ -1,4 +1,4 @@
-Bem vindo, me chamo kaiqu Barbosa. 
+Bem vindo, me chamo kaique Barbosa. 
 Esse é um projeto/ atividade da disciplica IHC do Senai.
 
 para testar meu projeto siga o passo a passo:
