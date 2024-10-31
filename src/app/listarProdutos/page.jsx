@@ -1,10 +1,19 @@
+"use client"
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function ListarProdutos() {
+
+  const router = useRouter();
+
   return (
     <div className="flex w-full items-center justify-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 w-full justify-center items-center m-auto">
-        <h1 className="text-4xl font-bold">Lista de Produtos</h1>
+        <div className=" flex justify-around w-full">
+          <h1 className="text-4xl font-bold">Lista de Produtos</h1>
+          {/* <Link href={'/'} className="text-4xl font-bold">Cadastrar Produto</Link> */}
+          <button onClick={() => {router.push('/cadastroProdutos')}} className="btn btn-active btn-primary">Cadastrar Produto</button>
+        </div>
         <div className="overflow-x-auto w-[60rem] shadow-lg shadow-indigo-500/50 p-2 rounded-lg">
           <table className="table table-zebra">
             {/* head */}
@@ -14,7 +23,6 @@ export default function ListarProdutos() {
                 <th>Nome</th>
                 <th>Preço</th>
                 <th>Quantidade</th>
-                
               </tr>
             </thead>
             <tbody>
