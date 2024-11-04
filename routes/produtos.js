@@ -33,7 +33,7 @@ produtoRouter.get("/", async (req, res) => {
     
 
   } catch (error) {
-    res.status(500).json({ error: "Erro ao cadastrar produto" });
+    res.status(500).json({ error: "Erro ao buscar produto" });
    
   }
 });

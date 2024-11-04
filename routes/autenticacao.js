@@ -35,11 +35,21 @@ const generateToken = (userId) => {
       res.status(500).json({ error: "Erro ao criar usuário" });
     }
   });
+
+  // ROTA PARA LISTAR USUARIOS
+
+  router.get('/lista', async (req, res) => {
+    try {
+      const usuaios = await prisma.user.findMany()
+      res.status(200).json(usuaios)
+    } catch (error) {
+      res.status(500).json(error)
+    }
+  })
   
 
 
   // rota de login
-  
   router.post('/login', async (req, res) => {
       try {
         const {email, senha} = req.body
