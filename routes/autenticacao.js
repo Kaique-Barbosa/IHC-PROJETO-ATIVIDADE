@@ -38,7 +38,7 @@ const generateToken = (userId) => {
 
   // ROTA PARA LISTAR USUARIOS
 
-  router.get('/lista', async (req, res) => {
+  router.get('/listar', async (req, res) => {
     try {
       const usuaios = await prisma.user.findMany()
       res.status(200).json(usuaios)
