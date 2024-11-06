@@ -16,7 +16,7 @@ const produto = require("./routes/produtos");
 
 dotenv.config();
 const app = express();
-const port = process.env.PORT || 3000; // porta onde o server rosará
+const port = process.env.PORT || 3010; // porta onde o server rosará
 app.use(cors());
 app.use(express.json());
 

@@ -15,8 +15,14 @@ const generateToken = (userId) => {
   router.post("/registrar", async (req, res) => {
     try {
       const { nome, email, senha } = req.body;
+  
+      // Verifique se todos os dados foram enviados corretamente
+      if (!nome || !email || !senha) {
+        return res.status(400).json({ error: "Todos os campos são obrigatórios" });
+      }
+  
       const senhaEncripty = await bcryptjs.hash(senha, 10);
-      
+  
       const user = await prisma.user.create({
         data: {
           nome,
@@ -26,13 +32,13 @@ const generateToken = (userId) => {
       });
   
       // Gera um token para o usuário registrado
-    //   const token = generateToken(user.id);
-    //   console.log(user.id)
-    //   res.status(200).json({ message: "Usuario criado com sucesso", token });
-    
-      res.status(200).json({ message: "Usuario criado com sucesso" });
+      const token = generateToken(user.id);
+      
+      // Remover a linha com sessionStorage, pois está sendo usada no lado do cliente
+      res.status(200).json({ message: "Usuário criado com sucesso", token });
     } catch (error) {
-      res.status(500).json({ error: "Erro ao criar usuário" });
+      console.error("Erro ao criar usuário:", error);  // Log do erro completo
+      res.status(500).json({ error: "Erro ao criar usuário", details: error.message });
     }
   });
 
