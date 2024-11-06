@@ -3,12 +3,25 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/utils/axiosInstance";
 import { useEffect, useState } from "react";
-import Moldal from "../components/Moldal";
+import AlertSucesso from "../components/AlertSucesso";
+
 
 export default function ListarProdutos() {
   const router = useRouter();
   const [data, setData] = useState([{}]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // estados para carregar os valores do botão atualiza
+  // armazenam somente o dado de 1 produto buscado pela funcao atualizarProdBtnEditar()
+  const [idProd, setIdProd] = useState('')
+  const [nomeProd, setNomeProd] = useState('')
+  const [prodQuantidade, setProdQuantidade] = useState('')
+  const [proPreco, setProdPreco] = useState('')
+
+  // estados para alertas
+  const [mostrarAlertaSucesso, setMostrarAlertaSucesso] = useState(false);
+
+
 
   const fetchData = async () => {
     try {
@@ -25,6 +38,27 @@ export default function ListarProdutos() {
         // Outro tipo de erro ocorreu
         console.error("Erro ao configurar requisição:", error.message);
       }
+    }
+  };
+
+  const atualizarProdBtnEditar = (id) => {
+    if (id) {
+      data.map((prod) => {
+        if (prod.id == id) {
+          // const data = {
+          //   id: prod.id,
+          //   nome: prod.nome,
+          //   quantidade: prod.quantidade,
+          //   preco: prod.preco,
+          // };
+          setIdProd(prod.id)
+          setNomeProd(prod.nome)
+          setProdQuantidade(prod.quantidade)
+          setProdPreco(prod.preco)
+        }else{
+          return console.log("erro ao buscar por id")
+        }
+      });
     }
   };
 
@@ -56,12 +90,25 @@ export default function ListarProdutos() {
 
   const atualizarProduto = async (id, nome, quantidade, preco) => {
     try {
-      const data = { nome, quantidade, preco };
-      const resposta = await axiosInstance.put(`/produtos${id}`, data);
+      const data = {
+        nome,
+        quantidade: parseInt(quantidade, 10), 
+        preco: parseFloat(preco) // 
+      };
+      if (isNaN(data.quantidade) || isNaN(data.preco)) {
+        console.error("Quantidade ou preço não são valores numéricos válidos.");
+        return;
+      }
+      
+      const resposta = await axiosInstance.put(`/produtos/${id}`, data);
 
-      console.log("produto deletado com sucesso", resposta);
+         // Mostrar o alerta de sucesso
+      setMostrarAlertaSucesso(true);
+      setTimeout(() => setMostrarAlertaSucesso(false), 3000); // Esconder o alerta após 3 segundos
+
       fetchData();
       setTimeout(() => setIsLoading(false), 500);
+
     } catch (error) {
       if (error.response) {
         console.error("Erro de resposta:", error.response.status);
@@ -105,8 +152,8 @@ export default function ListarProdutos() {
               <tr className="text-white font-bold text-lg">
                 <th>id</th>
                 <th>Nome</th>
-                <th>Preço</th>
                 <th>Quantidade</th>
+                <th>Preço</th>
               </tr>
             </thead>
             <tbody>
@@ -115,13 +162,16 @@ export default function ListarProdutos() {
                 <tr key={index}>
                   <th>{produto.id}</th>
                   <td>{produto.nome}</td>
-                  <td>{produto.quantidade}</td>
-                  <td>{produto.preco}</td>
+                  <td> {produto.quantidade} UND</td>
+                  <td>R$ {produto.preco}</td>
                   <td>
                     <div className="flex items-center justify-center gap-5 my-2">
+                      {/* MOLDAL EDITAR INICIO--------------------------- */}
                       <button
                         onClick={() =>
-                          document.getElementById("my_modal_2").showModal()
+                          {document.getElementById("my_modal_2").showModal()
+                            atualizarProdBtnEditar(produto.id)
+                          }
                         }
                         className="btn btn-info"
                       >
@@ -132,57 +182,78 @@ export default function ListarProdutos() {
                           <h3 className="font-bold text-lg">
                             Edite o campo desejado
                           </h3>
+                        
+                          {mostrarAlertaSucesso && <AlertSucesso  mensagem="Atualizado com sucesso" />}
+                         
                           <div className="overflow-x-auto">
-                            <table className="table">
+                            <table className="table flex justify-center items-center">
                               {/* head */}
                               <thead>
                                 <tr>
                                   <th>id</th>
                                   <th>Nome</th>
-                                  <th>Preço</th>
                                   <th>Quantidade</th>
+                                  <th>Preço</th>
                                 </tr>
                               </thead>
-                              <tbody>
+                              <tbody className="w-full">
                                 {/* row 1 */}
-                                <tr>
-                                  <th>
+                                <tr className="w-full justify-between">
+                                  <th className=" ">
+                                    
                                     <input
                                       type="text"
                                       placeholder=""
+                                      value={idProd }
+                                      onChange={(e) => setIdProd(e.target.value)}
+                                      disabled={true}
                                       className="input input-bordered input-primary w-full max-w-xs"
                                     />
                                   </th>
-                                  <td>
+                                  <td className=" ">
                                     <input
                                       type="text"
                                       placeholder=""
+                                      value={nomeProd}
+                                      onChange={(e) => setNomeProd(e.target.value)}
+                                      className="input input-bordered input-primary !w-full max-w-xs"
+                                    />
+                                  </td>
+                                  <td>
+                                    <input
+                                      type="number"
+                                      placeholder=""
+                                      value={prodQuantidade}
+                                      onChange={(e) => setProdQuantidade(e.target.value)}
                                       className="input input-bordered input-primary w-full max-w-xs"
                                     />
                                   </td>
                                   <td>
                                     <input
-                                      type="text"
+                                      type="number"
                                       placeholder=""
+                                      value={proPreco}
+                                      onChange={(e) => setProdPreco(e.target.value)}
                                       className="input input-bordered input-primary w-full max-w-xs"
                                     />
                                   </td>
-                                  <td>
-                                    <input
-                                      type="text"
-                                      placeholder=""
-                                      className="input input-bordered input-primary w-full max-w-xs"
-                                    />
-                                  </td>
+                              
                                 </tr>
                               </tbody>
                             </table>
+                                <div className="flex w-52 my-5 m-auto">
+                                  <button onClick={()=>{
+                                    atualizarProduto(idProd, nomeProd, prodQuantidade, proPreco)
+                                     
+                                  }} className="btn m-auto btn-info w-full">atualizar</button>
+                                </div>
                           </div>
                         </div>
                         <form method="dialog" className="modal-backdrop">
                           <button></button>
                         </form>
                       </dialog>
+                      {/* MOLDAL EDITAR FIM--------------------------- */}
                       <button
                         onClick={() => removerProduto(produto.id)}
                         className="btn btn-error"

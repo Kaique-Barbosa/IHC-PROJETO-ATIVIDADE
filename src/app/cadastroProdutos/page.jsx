@@ -9,6 +9,8 @@ export default function ListarProdutos() {
   const [quantidade, setQuantidade] = useState(0);
   const [preco, setPreco] = useState(0);
 
+
+  
   // Lendo em tempo real os dados dos inputs e armazenando nos states
   const handleInputs = (e) => {
     const { name, value } = e.target;
