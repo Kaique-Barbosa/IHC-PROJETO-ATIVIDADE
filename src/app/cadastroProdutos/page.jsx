@@ -5,9 +5,10 @@ import axiosInstance from "@/utils/axiosInstance";
 import { useState } from "react";
 
 export default function ListarProdutos() {
-  const [nome, setNome] = useState();
+  const [nome, setNome] = useState('');
   const [quantidade, setQuantidade] = useState(0);
   const [preco, setPreco] = useState(0);
+
 
 
   
@@ -36,6 +37,9 @@ export default function ListarProdutos() {
         const data = { nome, quantidade, preco };
         const resposta = await axiosInstance.post("/produtos", data);
         console.log("Produto cadastrado com sucesso", resposta.status);
+        setNome('')
+        setQuantidade('')
+        setPreco('')
       }
     } catch (error) {
       console.log("Erro ao cadastrar produto", error);
@@ -48,7 +52,7 @@ export default function ListarProdutos() {
     <div className="flex w-full items-center justify-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 w-full justify-center items-center m-auto">
         <div className="flex justify-around w-full">
-          <h1 className="text-4xl font-bold">Lista de Produtos</h1>
+          <h1 className="text-4xl font-bold">Cadastro de Produtos</h1>
         </div>
 
         <form
@@ -59,6 +63,9 @@ export default function ListarProdutos() {
             type="text"
             placeholder="Nome"
             name="nome"
+            value={nome || ""}
+     
+
             onChange={handleInputs}
             className="input input-bordered input-primary w-full m-auto max-w-xs"
           />
@@ -66,14 +73,18 @@ export default function ListarProdutos() {
             type="number"
             placeholder="Quantidade"
             name="quantidade"
+          
             onChange={handleInputs}
+            value={quantidade || ""}
             className="input input-bordered input-primary w-full m-auto max-w-xs"
           />
           <input
             type="number"
             placeholder="Preço"
             name="preco"
+   
             onChange={handleInputs}
+            value={preco || ""}
             className="input input-bordered input-primary w-full m-auto max-w-xs"
           />
           <button type="submit" className="btn btn-outline w-[85%] m-auto btn-primary my-5">
